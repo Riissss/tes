@@ -13,4 +13,4 @@ def delete_sessions(session_id:str, user_id:str):
     partenet_id = partner(user_id)
     killer_username = username(user_id)
     kill_session(session_id)
-    bot.send_message(partenet_id, "Obrolan telah ditutup oleh %s\n\untuk mencari obrolan baru /search" % killer_username)
+    bot.send_message(partenet_id, "Obrolan telah ditutup oleh %s\n\n untuk mencari obrolan baru /search" % killer_username)
