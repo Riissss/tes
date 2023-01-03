@@ -95,7 +95,7 @@ def command_handler(message):
                 if in_session:
                     sessions_id = db.row('chat_sessions', 'user_id', chat_id, 'sessions')
                     user.delete_sessions(sessions_id, chat_id)
-                    msg = "[Sebuah pesan dari bot 🤖]\n\nObrolan telah berhasil dihentikan\untuk mencari obrolan lain /search"
+                    msg = "[Sebuah pesan dari bot 🤖]\n\nObrolan telah berhasil dihentikan\n\n untuk mencari obrolan lain /search"
                     bot.reply_to(message, msg)
                 else:
                     msg = "[Pesan dari bot 🤖]\n\nAnda tidak berada di obrolan yang benarا"
