@@ -31,7 +31,7 @@ def save_username(message:Message, user_id:str, new_user:bool):
                     db.update("users", 'username', username, 'id', user_id)
                 bot.reply_to(message, "Nama telah berhasil diperbarui'{}'".format(username))
             else:
-            تم تحديث الاسم بنجاح الى
+            
                 msg = bot.reply_to(message, "/cancel Untuk membatalkan pengiriman\nPanjang nama tidak boleh melebihi 10 karakter \n Coba lagi")
                 bot.register_next_step_handler(msg, save_username, user_id, new_user)
     else:
