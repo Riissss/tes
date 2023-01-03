@@ -7,12 +7,30 @@ import db
 import markup
 import user
 import sender
-from config import (bot, botName, delay)
+from config import (bot, botName, delay,CHANNEL, GROUP, OWNER, TOKEN)
+
+def inline_menu():
+    """
+    Create inline menu for new chat
+    :return: InlineKeyboardMarkup
+    """
+    callback = types.InlineKeyboardButton(
+        text="\U00002709 New chat", callback_data="NewChat"
+    )
+    kenkan = types.InlineKeyboardButton(text="🔵 ᴏᴡɴᴇʀ", url=f"t.me/{OWNER}")
+    group = types.InlineKeyboardButton(text="👥 ɢʀᴏᴜᴘ", url=f"https://t.me/{GROUP}")
+    channel = types.InlineKeyboardButton(
+        text="ᴄʜᴀɴɴᴇʟ 📣", url=f"https://t.me/{CHANNEL}"
+    )
+    menu = types.InlineKeyboardMarkup()
+    menu.add(kenkan, channel, group, callback)
+
+    return menu
 
 
 # يلتقط الاوامر
 @bot.message_handler(commands=["start", "help", "search", 
-                                "new_name", "my_name", "kill",
+                                "new_name", "my_name", "stop",
                                     "cancel","terms_and_conditions",
                                         "privacy_policy","report"])
 def command_handler(message):
@@ -73,7 +91,7 @@ def command_handler(message):
                     bot.reply_to(message, "[Pesan dari bot 🤖]\n\nPencarian obrolan telah berhasil dibatalkan")
                 else:
                     bot.reply_to(message, "[Pesan dari bot 🤖]\n\nAnda tidak berada dalam obrolan untuk mencari obrolan pasangan /search")
-            elif text.startswith("/kill"):
+            elif text.startswith("/stop"):
                 if in_session:
                     sessions_id = db.row('chat_sessions', 'user_id', chat_id, 'sessions')
                     user.delete_sessions(sessions_id, chat_id)
@@ -81,12 +99,12 @@ def command_handler(message):
                     bot.reply_to(message, msg)
                 else:
                     msg = "[Pesan dari bot 🤖]\n\nAnda tidak berada di obrolan yang benarا"
-                    bot.reply_to(message, msg)
+                    bot.reply_to(message, msg,reply_markup=menu)
             elif text.startswith("/report"):
                 if in_session:
                     user.make_report(message, chat_id, username, partner_id)
                 else:
-                    bot.reply_to(message, "Anda tidak berada dalam sesi\nAnda dapat melaporkan pasangan Anda dalam sesi saat Anda berada dalam suatu sesi")
+                    bot.reply_to(message, "Anda tidak berada dalam obrolan\nAnda dapat melaporkan pasangan Anda dalam obrolan saat Anda berada dalam suatu obrolan")
             else:
                 pass
         # اذ كان محظور سوف يتم ارسال له رسالة من داخل الدالة
@@ -132,7 +150,7 @@ def message_handler(message):
                 # ايقاف الجلسة اذ انتها وقتها
                 sessions_id = user.get_sessions(chat_id)
                 user.kill_session(sessions_id)
-                msg = "[Pesan dari bot 🤖]\n\nWaktu sesi telah habis, untuk mencari sesi lain /search"
+                msg = "[Pesan dari bot 🤖]\n\nWaktu obrolan telah habis, untuk mencari obrolan lain /search"
                 for u_id in [chat_id, partner_id]:
                         bot.send_message(u_id, msg)         
         # اذ لم يكن في جلسة، سوف يتم تجاهل الرسالة
